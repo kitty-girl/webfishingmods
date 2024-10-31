@@ -1,5 +1,5 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://mods/CopyKatt.SM64CastleGrounds/Assets/Models/SM64/castle-grounds/untitled.glb" type="PackedScene" id=1]
+[ext_resource path="res://mods/CopyKatt.SM64CastleGrounds/Assets/Models/SM64/castle-grounds/grounds.glb" type="PackedScene" id=1]
 
 [node name="untitled" instance=ExtResource( 1 )]

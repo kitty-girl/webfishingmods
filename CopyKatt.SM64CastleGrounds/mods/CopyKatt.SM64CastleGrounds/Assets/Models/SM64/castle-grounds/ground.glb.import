@@ -2,12 +2,12 @@
 
 importer="scene"
 type="PackedScene"
-path="res://.import/untitled.glb-f684d9fa13ef3994d15d68485c708f40.scn"
+path="res://.import/ground.glb-aa23ff5740f74e1adfa12264da23f942.scn"
 
 [deps]
 
-source_file="res://mods/CopyKatt.SM64CastleGrounds/Assets/Models/SM64/castle-grounds/untitled.glb"
-dest_files=[ "res://.import/untitled.glb-f684d9fa13ef3994d15d68485c708f40.scn" ]
+source_file="res://mods/CopyKatt.SM64CastleGrounds/Assets/Models/SM64/castle-grounds/ground.glb"
+dest_files=[ "res://.import/ground.glb-aa23ff5740f74e1adfa12264da23f942.scn" ]
 
 [params]
 

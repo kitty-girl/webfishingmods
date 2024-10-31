@@ -26,10 +26,10 @@ light_energy = 0.12
 light_negative = true
 
 [node name="spawn_position" type="Position3D" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5315, 2.57779, -35.8055 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 2, -68 )
 
 [node name="tutorial_spawn_position" type="Position3D" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 275.719, 1.27741, -382.338 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 2, -68 )
 
 [node name="zones" type="Node" parent="."]
 

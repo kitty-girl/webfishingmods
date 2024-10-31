@@ -12,12 +12,13 @@
 [ext_resource path="res://Sounds/bounce_b.wav" type="AudioStream" id=10]
 [ext_resource path="res://Scenes/Map/Zones/ocean_spawns.gd" type="Script" id=11]
 [ext_resource path="res://mods/CopyKatt.SM64CastleGrounds/Scenes/SM64Objects/tree.tscn" type="PackedScene" id=12]
+[ext_resource path="res://mods/CopyKatt.SM64CastleGrounds/Assets/Shaders/SM64/skybox.gdshader" type="Shader" id=13]
+[ext_resource path="res://Scenes/Interactables/NPCs/npc_sell.tscn" type="PackedScene" id=14]
 [ext_resource path="res://Scenes/Interactables/vending_machine.tscn" type="PackedScene" id=34]
 [ext_resource path="res://Scenes/Interactables/questboard.tscn" type="PackedScene" id=39]
 [ext_resource path="res://Scenes/Map/Props/extreme_water.tscn" type="PackedScene" id=41]
 [ext_resource path="res://Scenes/Map/Tools/area_entrance.tscn" type="PackedScene" id=47]
 [ext_resource path="res://Scenes/Map/Tools/transition_zone.tscn" type="PackedScene" id=54]
-[ext_resource path="res://Scenes/Entities/ChalkCanvas/chalk_canvas.tscn" type="PackedScene" id=56]
 [ext_resource path="res://Scenes/Interactables/NPCs/npc_boat.tscn" type="PackedScene" id=60]
 [ext_resource path="res://mods/CopyKatt.SM64CastleGrounds/Assets/Models/SM64/castle-grounds/scene.tscn" type="PackedScene" id=89]
 
@@ -47,86 +48,8 @@ extents = Vector3( 1.3, 1.3, 1.3 )
 [sub_resource type="BoxShape" id=373]
 extents = Vector3( 10, 100, 88.6718 )
 
-[sub_resource type="Shader" id=377]
-code = "shader_type spatial;
-render_mode unshaded;
-
-uniform bool texture_filtering;
-
-uniform sampler2D albedo_texture;
-uniform vec2 uv_offset = vec2(0.0);
-uniform vec2 uv_scale = vec2(1.0);
-uniform vec2 uv_scroll_speed = vec2(0.0);
-uniform vec3 camera_rotation = vec3(0,0,0);
-const float PI = 3.14159265;
-//
-//vec4 albedoTextureFiltered(vec2 uv)
-//{
-//	vec2 albedo_texture_size = vec2(textureSize(albedo_texture, 0));
-//
-//	vec2 tex_pix_a = vec2(1.0 / albedo_texture_size.x, 0.0);
-//	vec2 tex_pix_b = vec2(0.0, 1.0 / albedo_texture_size.y);
-//	vec2 tex_pix_c = vec2(tex_pix_a.x,tex_pix_b.y);
-//	vec2 half_tex = vec2(tex_pix_a.x * 0.5, tex_pix_b.y * 0.5);
-//	vec2 uv_centered = uv - half_tex;
-//
-//	vec4 diffuse_color = texture(albedo_texture, uv_centered);
-//	vec4 sample_a = texture(albedo_texture, uv_centered + tex_pix_a);
-//	vec4 sample_b = texture(albedo_texture, uv_centered + tex_pix_b);
-//	vec4 sample_c = texture(albedo_texture, uv_centered + tex_pix_c);
-//
-//	float interp_x = mod(uv_centered.x * albedo_texture_size.x, albedo_texture_size.x);
-//	float interp_y = mod(uv_centered.y * albedo_texture_size.y, albedo_texture_size.y);
-//
-//	if (uv_centered.x < 0.0)
-//	{
-//		interp_x = 1.0 - interp_x * -1.0;
-//	}
-//	if (uv_centered.y < 0.0)
-//	{
-//		interp_y = 1.0 - interp_y * -1.0;
-//	}
-//
-//	diffuse_color = (
-//		diffuse_color +
-//		interp_x * (sample_a - diffuse_color) +
-//		interp_y * (sample_b - diffuse_color)) *
-//		(1.0 - step(1.0, interp_x + interp_y));
-//
-//	diffuse_color += (
-//		(sample_c + (1.0 - interp_x) * (sample_b - sample_c) +
-//		(1.0 - interp_y) * (sample_a - sample_c)) *
-//		step(1.0, interp_x + interp_y));
-//
-//    return diffuse_color;
-//}
-
-void fragment()
-{
-//	float y = atan(VIEW_MATRIX[0][2], VIEW_MATRIX[2][2]);
-//	float x = asin(VIEW_MATRIX[1][2]);
-	float y = camera_rotation.y;
-	float x = camera_rotation.x;
-
-	vec2 bg_coordinates = (vec2(y * 0.5, -x) * -(1.0 / PI)) + 0.5;
-	bg_coordinates.y *= 0.5;
-
-	vec2 bg_scale;
-
-	bg_scale.y = 0.5;
-
-	vec2 albedo_texture_size = vec2(textureSize(albedo_texture, 0));
-	float aspect_ratio = albedo_texture_size.x / albedo_texture_size.y;
-	bg_scale.x = VIEWPORT_SIZE.x / (VIEWPORT_SIZE.y * aspect_ratio) * bg_scale.y;
-
-	vec2 uv = (
-		SCREEN_UV * uv_scale + uv_offset + (uv_scroll_speed * TIME)) * bg_scale + bg_coordinates;
-
-	ALBEDO = texture(albedo_texture, uv*vec2(1,-1)).rgb*texture(albedo_texture, uv*vec2(1,-1)).rgb;
-}"
-
 [sub_resource type="ShaderMaterial" id=378]
-shader = SubResource( 377 )
+shader = ExtResource( 13 )
 shader_param/texture_filtering = false
 shader_param/uv_offset = Vector2( 0, 0 )
 shader_param/uv_scale = Vector2( 1, 1 )
@@ -164,13 +87,13 @@ transform = Transform( 0.947685, -0.0418184, 0.316455, -0.316024, -0.262549, 0.9
 editor_only = true
 
 [node name="map_main" type="Spatial" parent="."]
-transform = Transform( 1.75, 0, 0, 0, 1.25, 0, 0, 0, 1.75, -63.0027, 2.40864, 47.0846 )
+transform = Transform( 1.75, 0, 0, 0, 1.75, 0, 0, 0, 1.75, -63.0027, 2.40864, 47.0846 )
 
 [node name="untitled" parent="map_main" instance=ExtResource( 89 )]
-transform = Transform( 5, 0, 0, 0, 7.5, 0, 0, 0, 5, 36.1959, 1, -25.1038 )
+transform = Transform( 7.5, 0, 0, 0, 7.5, 0, 0, 0, 7.5, 36.1959, 1, -25.1038 )
 
 [node name="ladder2" type="MeshInstance" parent="map_main"]
-transform = Transform( 1.31134e-07, 0.151953, -0.988386, 0, 0.988388, 0.151953, 0.999998, -1.99262e-08, 1.29611e-07, 17.4809, 2.42607, 3.91533 )
+transform = Transform( 1.13247e-07, 0.227929, -1.48258, 0, 1.48258, 0.227929, 1.5, -1.72082e-08, 1.11932e-07, 8.93477, 2.65208, 17.9229 )
 mesh = SubResource( 374 )
 skeleton = NodePath("")
 material/0 = ExtResource( 3 )
@@ -181,7 +104,7 @@ material/0 = ExtResource( 3 )
 shape = SubResource( 375 )
 
 [node name="ladder3" type="MeshInstance" parent="map_main"]
-transform = Transform( 1.31134e-07, 0.151953, -0.988386, 0, 0.988388, 0.151953, 0.999998, -1.99262e-08, 1.29611e-07, 18.539, 9.23666, 3.91533 )
+transform = Transform( 1.13247e-07, 0.227929, -1.48258, 0, 1.48258, 0.227929, 1.5, -1.72082e-08, 1.11932e-07, 9.59149, 6.78198, 17.9229 )
 mesh = SubResource( 374 )
 skeleton = NodePath("")
 material/0 = ExtResource( 3 )
@@ -194,41 +117,53 @@ shape = SubResource( 375 )
 [node name="NPCs" type="Spatial" parent="."]
 
 [node name="npc_test" parent="NPCs" instance=ExtResource( 39 )]
-transform = Transform( 0.39244, 0, 0.0774002, 0, 0.4, 0, -0.0774002, 0, 0.39244, 12.9003, 3.15815, -30.2107 )
+transform = Transform( 0.39244, 0, 0.0774002, 0, 0.4, 0, -0.0774002, 0, 0.39244, 15.3916, 2.94742, -43.9235 )
 
 [node name="npc_vending" parent="NPCs" instance=ExtResource( 34 )]
-transform = Transform( 0.633621, 0, 0.0623952, 0, 0.636686, 0, -0.0623952, 0, 0.633621, 8.8902, 3.06547, -29.1125 )
+transform = Transform( 0.551863, 0, -0.317515, 0, 0.636686, 0, 0.317515, 0, 0.551863, 9.41926, 2.8724, -44.0041 )
 
 [node name="npc_boat" parent="NPCs" instance=ExtResource( 60 )]
-transform = Transform( -0.644687, 0, -5.63604e-08, 0, 0.644687, 0, 5.63604e-08, 0, -0.644687, 55.5242, 5.92498, 34.0033 )
+transform = Transform( -0.644687, 0, -5.63604e-08, 0, 0.644687, 0, 5.63604e-08, 0, -0.644687, 83.4448, 5.92498, 45.5582 )
+
+[node name="npc_test2" parent="NPCs" instance=ExtResource( 14 )]
+transform = Transform( -0.898542, 0, -0.438889, 0, 1, 0, 0.438889, 0, -0.898542, 19.5715, 2.7278, -46.1665 )
+
+[node name="npc_test3" parent="NPCs" instance=ExtResource( 14 )]
+transform = Transform( -0.998625, 0, 0.052441, 0, 1, 0, -0.052441, 0, -0.998625, 78.8796, 5.63444, 43.9952 )
+
+[node name="npc_test4" parent="NPCs" instance=ExtResource( 14 )]
+transform = Transform( -0.997346, 0, 0.0728209, 0, 1, 0, -0.0728209, 0, -0.997346, -35.3569, 4.28742, 3.63039 )
+
+[node name="npc_test5" parent="NPCs" instance=ExtResource( 14 )]
+transform = Transform( -0.997346, 0, 0.0728209, 0, 1, 0, -0.0728209, 0, -0.997346, -55.8706, 6.46435, 81.0171 )
 
 [node name="buildings" type="Spatial" parent="."]
 
 [node name="hub_building" parent="buildings" instance=ExtResource( 1 )]
-transform = Transform( -0.608716, 0, -5.32156e-08, 0, 0.608716, 0, 5.32156e-08, 0, -0.608716, -0.180048, 8.65447, 28.5294 )
+transform = Transform( -0.608716, 0, -5.32156e-08, 0, 0.608716, 0, 5.32156e-08, 0, -0.608716, -0.469662, 10.4364, 39.2034 )
 
 [node name="aqua_building" parent="buildings" instance=ExtResource( 2 )]
-transform = Transform( 0.609, 0, 0, 0, 0.609, 0, 0, 0, 0.609, -12.5174, 30.8696, 39.556 )
+transform = Transform( 0.609, 0, 0, 0, 0.609, 0, 0, 0, 0.609, -16.1514, 41.5805, 56.482 )
 
 [node name="ocean_water" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.843284, 0 )
 
 [node name="water10" parent="ocean_water" instance=ExtResource( 41 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.47377, -6.88992, 7.33645 )
+transform = Transform( 1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 2.47377, -11.4659, 7.33645 )
 visible = false
 
 [node name="portals" type="Spatial" parent="."]
 
 [node name="tutorial_spawn" parent="portals" instance=ExtResource( 47 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.38703, 2.90541, -37.1434 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 14.7735, 2.01044, -68.3902 )
 entrance_id = "tutorial_spawn"
 
 [node name="hub_exit" parent="portals" instance=ExtResource( 47 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.199376, 7.32871, 23.1828 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.549885, 9.10229, 33.8841 )
 entrance_id = "hub_exit"
 
 [node name="hub_use" parent="portals" instance=ExtResource( 54 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.87726, 8.8709, 24.2414 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.47081, 10.7831, 35.3896 )
 text = "ENTER HUB"
 zone_id = "hub_building_zone"
 spawn_id = "hub_entrance"
@@ -238,25 +173,25 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.71847, 0, 1.44172 )
 shape = SubResource( 351 )
 
 [node name="aqua_exit" parent="portals" instance=ExtResource( 47 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12.7749, 29.6589, 45.3947 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.8697, 42.383, 64.3492 )
 entrance_id = "aqua_exit"
 
 [node name="aqua_use" parent="portals" instance=ExtResource( 54 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -14.3271, 33.7204, 43.068 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18.0707, 44.3642, 56.2288 )
 text = "ENTER AQUARIUM"
 zone_id = "aquarium_zone"
 spawn_id = "aqua_entrance"
 
 [node name="CollisionShape" type="CollisionShape" parent="portals/aqua_use"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4293, -0.989225, 0.145721 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4293, -0.989223, 2.84895 )
 shape = SubResource( 351 )
 
 [node name="ladder_entrance2" parent="portals" instance=ExtResource( 47 )]
-transform = Transform( 1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -28.8245, 23.3728, 53.6781 )
+transform = Transform( 1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -42.8672, 31.5122, 77.417 )
 entrance_id = "ladder_spawn_b"
 
 [node name="ladder_use2" parent="portals" instance=ExtResource( 54 )]
-transform = Transform( 1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -35.905, 5.31847, 53.4157 )
+transform = Transform( 1.13247e-07, 0, -1.5, 0, 1.5, 0, 1.5, 0, 1.13247e-07, -52.9014, 7.87257, 77.3143 )
 text = "CLIMB LADDER"
 zone_id = "main_zone"
 spawn_id = "ladder_spawn_b"
@@ -290,11 +225,8 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1.30386, 1000, 0, 0 )
 
 [node name="chalk_zones" type="Spatial" parent="."]
 
-[node name="chalk_canvas" parent="chalk_zones" instance=ExtResource( 56 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.3945, 1.88869, -37.7795 )
-canvas_size = 10.0
-
 [node name="invis_walls" type="Spatial" parent="."]
+transform = Transform( 1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0 )
 
 [node name="StaticBody" type="StaticBody" parent="invis_walls"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -148.873, 27.6105, 0 )
@@ -324,7 +256,7 @@ script = ExtResource( 5 )
 [node name="bounce_shrooms" type="Spatial" parent="."]
 
 [node name="Area" type="Area" parent="bounce_shrooms"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -21.0042, -1.82217, -14.7762 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -31.3231, -1.82217, -24.17 )
 script = ExtResource( 9 )
 
 [node name="CollisionShape" type="CollisionShape" parent="bounce_shrooms/Area"]
@@ -349,77 +281,87 @@ max_db = -2.0
 bus = "SFX"
 
 [node name="trees" type="Spatial" parent="."]
+transform = Transform( 1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0 )
 
 [node name="Tree" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999689, 0.0249556, 0, -0.0249556, 0.999689, 0, 0, 0, 1, 20.6481, 2.93231, -23.9807 )
+transform = Transform( 0.999689, 0.0249556, 0, -0.0249556, 0.999689, 0, 0, 0, 1, 20.6583, 2.61426, -23.9576 )
 
 [node name="Tree2" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.9588, 2.5714, -25.2143 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.9588, 2.19289, -25.2143 )
 
 [node name="Tree3" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.1479, 5.44215, -16.8246 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.1479, 4.68945, -16.8246 )
 
 [node name="Tree4" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 17.9177, 5.66859, -14.5939 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 17.9177, 4.49548, -14.5939 )
 
 [node name="Tree5" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 1.83066, 4.66336, -25.7784 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 1.83066, 3.9062, -25.7784 )
 
 [node name="Tree6" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -4.66491, 5.20838, -22.5458 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -4.66491, 4.11769, -22.5458 )
 
 [node name="Tree7" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -7.56081, 3.64028, -19.2555 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -7.56081, 2.77764, -19.2555 )
 
 [node name="Tree8" parent="trees" instance=ExtResource( 12 )]
 transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -13.4974, 0.685358, -26.6169 )
 
 [node name="Tree9" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -16.2526, 2.2284, -8.35054 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -16.2526, 2.31132, -8.35054 )
 
 [node name="Tree10" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -27.8181, 1.64704, -1.558 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -27.8181, 2.01419, -1.558 )
 
 [node name="Tree18" parent="trees" instance=ExtResource( 12 )]
 transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -53.5157, 0.454054, -1.06136 )
 
 [node name="Tree19" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -49.317, 3.30521, 8.20848 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -49.317, 2.44905, 8.20848 )
 
 [node name="Tree20" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -55.6148, 3.91553, 12.8473 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -55.6148, 2.99895, 12.8473 )
 
 [node name="Tree21" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -51.4857, 3.91553, 23.3429 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -51.4857, 2.90106, 23.3429 )
 
 [node name="Tree22" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -48.3512, 3.91553, 27.4952 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -48.3512, 3.22497, 27.4952 )
 
 [node name="Tree23" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -50.5774, 5.45099, 35.9881 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -50.5774, 4.56801, 35.9881 )
 
 [node name="Tree24" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -53.7801, 6.25173, 41.4863 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, -53.7801, 5.35724, 41.4863 )
 
 [node name="Tree11" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 41.8847, 2.47584, -27.3051 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 41.8847, 1.51252, -27.3051 )
+
+[node name="Tree25" parent="trees" instance=ExtResource( 12 )]
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 293.608, -54.5227, -34.7372 )
+
+[node name="Tree26" parent="trees" instance=ExtResource( 12 )]
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 55.7414, 2.4802, -24.241 )
 
 [node name="Tree12" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 44.7465, 1.99468, -7.02749 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 44.7465, 1.34316, -7.02749 )
+
+[node name="Tree27" parent="trees" instance=ExtResource( 12 )]
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 58.6397, 0.993793, -10.9417 )
 
 [node name="Tree14" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 48.544, 2.60733, 3.60294 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 48.544, 1.87086, 3.60294 )
 
 [node name="Tree15" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 56.0896, 2.78269, 12.6524 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 56.0896, 1.86291, 12.6524 )
 
 [node name="Tree16" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 49.2483, 3.60792, 22.8114 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 49.2483, 2.65146, 22.8114 )
 
 [node name="Tree17" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 51.0891, 3.8003, 28.1643 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 51.0891, 2.9094, 28.1643 )
 
 [node name="Tree13" parent="trees" instance=ExtResource( 12 )]
-transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 40.7907, 2.46831, -2.49345 )
+transform = Transform( 0.999727, 0.0233853, 0, -0.0233853, 0.999727, 0, 0, 0, 1, 40.7907, 1.83438, -2.49345 )
 
 [connection signal="body_entered" from="bounce_shrooms/Area" to="bounce_shrooms/Area" method="_on_Area_body_entered"]
