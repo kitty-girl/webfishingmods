@@ -1,0 +1,23 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/sm64_coin.wav-5f68b1a9b5cbb47a1858b71c6dbcda0a.sample"
+
+[deps]
+
+source_file="res://mods/CopyKatt.SM64Map/Assets/Sounds/sm64_coin.wav"
+dest_files=[ "res://.import/sm64_coin.wav-5f68b1a9b5cbb47a1858b71c6dbcda0a.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://mods/CopyKatt.SM64Map/Scenes/SM64Objects/doors/door_decor.gd" type="Script" id=2]
+[ext_resource path="res://mods/CopyKatt.SM64Map/Assets/Textures/SM64/door_decor.png" type="Texture" id=3]
+
+[sub_resource type="AtlasTexture" id=1]
+flags = 20
+atlas = ExtResource( 3 )
+region = Rect2( 32, 0, 32, 32 )
+filter_clip = true
+
+[node name="door_decor" type="Spatial"]
+script = ExtResource( 2 )
+
+[node name="Sprite1" type="Sprite3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.33678, 0.191754 )
+pixel_size = 0.035
+shaded = true
+double_sided = false
+texture = SubResource( 1 )
+
+[node name="Sprite2" type="Sprite3D" parent="."]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 2.337, -0.192 )
+pixel_size = 0.035
+shaded = true
+double_sided = false
+texture = SubResource( 1 )

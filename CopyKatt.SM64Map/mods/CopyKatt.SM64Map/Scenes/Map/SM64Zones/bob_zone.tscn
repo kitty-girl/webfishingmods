@@ -1,0 +1,72 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://mods/CopyKatt.SM64Map/Assets/Models/SM64/Areas/bob/bob.glb" type="PackedScene" id=1]
+[ext_resource path="res://Scenes/Interactables/NPCs/npc_general.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/Interactables/NPCs/npc_main.tscn" type="PackedScene" id=3]
+[ext_resource path="res://mods/CopyKatt.SM64Map/Scenes/SM64Objects/skybox.gd" type="Script" id=4]
+[ext_resource path="res://mods/CopyKatt.SM64Map/Assets/Textures/SM64/CastleGroundsSkybox.png" type="Texture" id=5]
+[ext_resource path="res://mods/CopyKatt.SM64Map/Assets/Shaders/SM64/skybox.gdshader" type="Shader" id=6]
+[ext_resource path="res://Scenes/Map/Zones/zone.gd" type="Script" id=8]
+[ext_resource path="res://Scenes/Interactables/NPCs/npc_sell.tscn" type="PackedScene" id=14]
+[ext_resource path="res://Scenes/Interactables/vending_machine.tscn" type="PackedScene" id=34]
+[ext_resource path="res://Scenes/Interactables/questboard.tscn" type="PackedScene" id=39]
+[ext_resource path="res://Scenes/Map/Tools/area_entrance.tscn" type="PackedScene" id=47]
+
+[sub_resource type="ShaderMaterial" id=378]
+shader = ExtResource( 6 )
+shader_param/texture_filtering = false
+shader_param/uv_offset = Vector2( 0, 0 )
+shader_param/uv_scale = Vector2( 1, 1 )
+shader_param/uv_scroll_speed = Vector2( 0, 0 )
+shader_param/camera_rotation = Vector3( 0, 0, 0 )
+shader_param/albedo_texture = ExtResource( 5 )
+
+[sub_resource type="CubeMesh" id=379]
+material = SubResource( 378 )
+flip_faces = true
+size = Vector3( 300, 300, 300 )
+
+[node name="bob_zone" type="Spatial"]
+script = ExtResource( 8 )
+
+[node name="editor_light" type="DirectionalLight" parent="."]
+transform = Transform( 0.947685, -0.0418184, 0.316455, -0.316024, -0.262549, 0.9117, 0.0449591, -0.964012, -0.26203, 0, 33.2939, 0 )
+editor_only = true
+
+[node name="map_main" type="Spatial" parent="."]
+transform = Transform( 1.75, 0, 0, 0, 1.75, 0, 0, 0, 1.75, 0, 0, 0 )
+
+[node name="bob" parent="map_main" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.06856, 0, -5.83877 )
+
+[node name="StaticBody" parent="map_main/bob/solid " index="0"]
+collision_layer = 257
+
+[node name="NPCs" type="Spatial" parent="."]
+
+[node name="npc_test" parent="NPCs" instance=ExtResource( 39 )]
+transform = Transform( -0.282843, 0, -0.282843, 0, 0.4, 0, 0.282843, 0, -0.282843, -107.013, -20.2362, 94.1482 )
+
+[node name="npc_vending" parent="NPCs" instance=ExtResource( 34 )]
+transform = Transform( -0.453969, 0, 0.44641, 0, 0.636686, 0, -0.44641, 0, -0.453969, -92.7686, -20.3874, 92.9134 )
+
+[node name="npc_test3" parent="NPCs" instance=ExtResource( 14 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -102.274, -20.445, 90.7487 )
+
+[node name="npc_general" parent="NPCs" instance=ExtResource( 2 )]
+transform = Transform( 0.663586, 0, 0.748099, 0, 1, 0, -0.748099, 0, 0.663586, -96.3529, -20.425, 90.2948 )
+
+[node name="npc_main" parent="NPCs" instance=ExtResource( 3 )]
+transform = Transform( 0.999599, 0, -0.0283228, 0, 1, 0, 0.0283228, 0, 0.999599, -99.156, -19.909, 90.5251 )
+
+[node name="portals" type="Spatial" parent="."]
+
+[node name="bob_entrance" parent="portals" instance=ExtResource( 47 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -103.909, -20.7091, 102.965 )
+entrance_id = "bob_entrance"
+
+[node name="Skybox" type="MeshInstance" parent="."]
+mesh = SubResource( 379 )
+script = ExtResource( 4 )
+
+[editable path="map_main/bob"]
