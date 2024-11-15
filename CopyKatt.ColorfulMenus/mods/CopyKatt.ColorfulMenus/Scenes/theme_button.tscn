@@ -1,0 +1,142 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://mods/CopyKatt.ColorfulMenus/Assets/Textures/theme_button.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Themes/main.tres" type="Theme" id=2]
+[ext_resource path="res://mods/CopyKatt.ColorfulMenus/Assets/Themes/window.theme" type="Theme" id=3]
+[ext_resource path="res://Assets/Themes/panel_red.tres" type="StyleBox" id=4]
+[ext_resource path="res://mods/CopyKatt.ColorfulMenus/Assets/Themes/main.tres" type="Theme" id=5]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Control
+
+func _ready():
+	pass
+
+func update():
+	pass"
+
+[node name="ColorfulMenus" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme = ExtResource( 5 )
+script = SubResource( 1 )
+
+[node name="theme_button" type="Button" parent="."]
+anchor_left = 0.025
+anchor_top = 0.025
+anchor_right = 0.025
+anchor_bottom = 0.025
+margin_right = 60.0
+margin_bottom = 64.0
+theme = ExtResource( 2 )
+icon = ExtResource( 1 )
+icon_align = 1
+expand_icon = true
+
+[node name="Popup" type="WindowDialog" parent="."]
+visible = true
+anchor_left = 0.2
+anchor_top = 0.2
+anchor_right = 0.8
+anchor_bottom = 0.8
+rect_min_size = Vector2( 500, 200 )
+theme = ExtResource( 3 )
+popup_exclusive = true
+window_title = "Edit Theme"
+resizable = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Popup"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Popup/ScrollContainer"]
+margin_right = 1152.0
+margin_bottom = 52.0
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="Popup/ScrollContainer/VBoxContainer"]
+margin_right = 1152.0
+margin_bottom = 44.0
+custom_constants/margin_top = 10
+
+[node name="IO" type="HBoxContainer" parent="Popup/ScrollContainer/VBoxContainer/MarginContainer"]
+margin_left = 40.0
+margin_top = 10.0
+margin_right = 1112.0
+margin_bottom = 44.0
+
+[node name="Reset" type="Button" parent="Popup/ScrollContainer/VBoxContainer/MarginContainer/IO"]
+margin_right = 211.0
+margin_bottom = 34.0
+size_flags_horizontal = 3
+custom_styles/normal = ExtResource( 4 )
+text = "Reset"
+
+[node name="Import" type="Button" parent="Popup/ScrollContainer/VBoxContainer/MarginContainer/IO"]
+margin_left = 215.0
+margin_right = 426.0
+margin_bottom = 34.0
+size_flags_horizontal = 3
+text = "Import"
+
+[node name="Export" type="Button" parent="Popup/ScrollContainer/VBoxContainer/MarginContainer/IO"]
+margin_left = 430.0
+margin_right = 641.0
+margin_bottom = 34.0
+size_flags_horizontal = 3
+text = "Export"
+
+[node name="Reload" type="Button" parent="Popup/ScrollContainer/VBoxContainer/MarginContainer/IO"]
+margin_left = 645.0
+margin_right = 856.0
+margin_bottom = 34.0
+size_flags_horizontal = 3
+text = "Reload"
+
+[node name="Save" type="Button" parent="Popup/ScrollContainer/VBoxContainer/MarginContainer/IO"]
+margin_left = 860.0
+margin_right = 1072.0
+margin_bottom = 34.0
+size_flags_horizontal = 3
+text = "Save"
+
+[node name="HSeparator" type="HSeparator" parent="Popup/ScrollContainer/VBoxContainer"]
+margin_top = 48.0
+margin_right = 1152.0
+margin_bottom = 52.0
+
+[node name="ExportDialog" type="FileDialog" parent="."]
+visible = true
+margin_left = 661.0
+margin_top = 338.0
+margin_right = 1270.0
+margin_bottom = 766.0
+theme = ExtResource( 3 )
+window_title = "Export Theme"
+resizable = true
+dialog_hide_on_ok = true
+mode_overrides_title = false
+access = 2
+filters = PoolStringArray( "*.json" )
+
+[node name="ImportDialog" type="FileDialog" parent="."]
+margin_left = 661.0
+margin_top = 338.0
+margin_right = 1270.0
+margin_bottom = 766.0
+theme = ExtResource( 3 )
+window_title = "Import Theme"
+resizable = true
+dialog_hide_on_ok = true
+mode_overrides_title = false
+mode = 0
+access = 2
+filters = PoolStringArray( "*.json" )
+
+[connection signal="pressed" from="theme_button" to="Popup" method="show"]
+[connection signal="pressed" from="Popup/ScrollContainer/VBoxContainer/MarginContainer/IO/Import" to="ImportDialog" method="show"]
+[connection signal="pressed" from="Popup/ScrollContainer/VBoxContainer/MarginContainer/IO/Export" to="ExportDialog" method="show"]
