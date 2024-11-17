@@ -1,4 +1,12 @@
 # CopyKatt's Webfishing Mods
+## More Hotbar Slots
+### Changelog
+- v1.0.0
+    - Inital release
+## Colorful Menus
+### Changelog
+- v1.0.0
+    - Inital release
 ## SM64Map
 ### Changelog
 - v0.1.0
