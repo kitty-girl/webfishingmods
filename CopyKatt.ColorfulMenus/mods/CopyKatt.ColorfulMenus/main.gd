@@ -5,6 +5,7 @@ var theme := preload("res://Assets/Themes/main.tres")
 var theme_secondary := preload("res://Assets/Themes/secondary.tres")
 var _panel_med := preload("res://Assets/Themes/panel_med.tres")
 var _panel_green := preload("res://Assets/Themes/panel_green.tres")
+var _panel_red := preload("res://Assets/Themes/panel_red.tres")
 
 # current instance of the theme button
 var instance
@@ -17,6 +18,7 @@ var default_colors = {
 	'panel_light': Color('ffeed5'),
 	'panel_dim': Color('d5aa73'),
 	'panel_accent': Color('5a755a'),
+	'panel_warning': Color('ac0029'),
 
 	'SEP_1':'-',
 
@@ -39,6 +41,7 @@ var default_colors = {
 	'label_dark': Color('6a441f'),
 	'label_accent': Color('5a755a'),
 	'label_worth': Color('a4aa39'),
+	'label_warning': Color('ff0031'),
 
 	'SEP_4':'-',
 
@@ -116,6 +119,19 @@ var default_colors = {
 	
 	'knot_separator_light': Color('ffeed5'),
 	'knot_separator_dim': Color('d5aa73'),
+	
+	'SEP_18': '-',
+	
+	'menu_button_bg': Color('ffeed5'),
+	'menu_button_bg_hover': Color('d5aa73'),
+	'menu_button_bg_pressed': Color('6a4420'),
+
+	'menu_button_shadow': Color('6a4420'),
+	'menu_button_shadow_pressed': Color('622810'),
+
+	'menu_button_font': Color('6a4420'),
+	'menu_button_font_hover': Color('ffeed5'),
+	'menu_button_font_pressed': Color('ffeed5'),
 }
 
 # currently applied colors
@@ -133,9 +149,13 @@ var _item_background_outline = preload("res://Scenes/HUD/inventory_item.tscn").i
 # the panel of the outline used for selected cosmetics
 var _cosmetic_background_outline = preload("res://Scenes/HUD/CosmeticMenu/cosmetic_button.tscn").instance().get_node('ColorRect').get_stylebox('panel')
 
+# the panel used by Xenon for each setting
+var xenon_setting_panel = null
+
 var colored_images = {
 	'knot_separator_light': ImageTexture.new(),
 	'knot_separator_dim': ImageTexture.new(),
+	'slider_grabber': ImageTexture.new(),
 }
 
 # io functions
@@ -154,6 +174,9 @@ func export_theme(path):
 	var file = File.new()
 	file.open(path,File.WRITE_READ)
 	file.store_string(to_json(export_json))
+	
+	if instance:
+		instance.get_node('Popup/ScrollContainer/VBoxContainer/UnsavedChanges').modulate = Color.transparent
 
 func import_theme(path):
 	var file = File.new()
@@ -163,11 +186,13 @@ func import_theme(path):
 	
 	if not json.has('format') or json.format != FORMAT:
 		PopupMessage._show_popup("The theme failed to load")
-		return
 
 	for i in json.colors.keys():
 		colors[i] = Color(json.colors[i])
 	update()
+	
+	if instance:
+		instance.get_node('Popup/ScrollContainer/VBoxContainer/UnsavedChanges').modulate = Color.transparent
 
 func reset_theme():
 	colors = default_colors.duplicate()
@@ -185,7 +210,10 @@ func _ready():
 	colored_images.knot_separator_dim.create_from_image(preload("res://Assets/Textures/UI/knot_sep2.png").get_data(), 0)
 	
 	var empty_hand_tex = ImageTexture.new()
+	empty_hand_tex.create_from_image(preload('res://Assets/Textures/Items/toolicons1.png').get_data(), 0)
 	Globals.item_data.empty_hand.file.icon = empty_hand_tex
+	
+	recursive_apply_text_shader($'/root/OptionsMenu')
 	
 	# setup tooltip text separately
 	for i in $'/root/Tooltip/Panel'.get_children():
@@ -201,6 +229,9 @@ func _ready():
 	var theme_saver = preload("res://mods/CopyKatt.ColorfulMenus/default_themes_saver.gd").new()
 	theme_saver.save()
 #	add_child(theme_saver)
+	
+	if ResourceLoader.exists('res://mods/Nilenta.Xenon/main.gd'):
+		xenon_setting_panel = preload("res://mods/Nilenta.Xenon/Menu/XenonMenu/xenon_panel.tscn").instance().get_stylebox('panel')
 	
 	# connects to let the program know where and when to add the theme editor
 	# also saves all labels to a cache that it can quickly apply new colors to
@@ -263,11 +294,23 @@ func _on_node_added(node):
 			color.get_picker().connect('color_changed', self, 'set_color', [i])
 		update()
 		return
-			
+	
+#	if str(node.get_path()).ends_with('xenon_menu/Panel/Panel2/ScrollContainer/VBoxContainer'):
+#		yield(get_tree(),'idle_frame')
+#		xenon_setting_panel = node.get_child(0).get_stylebox('panel')
+	
 	# apply text_mat to every single label that enters the scenetree
 	if node is RichTextLabel or node is Label:
 		node.material = text_mat
 		return
+	
+	if node is Button and node.get_stylebox('normal') == preload("res://Assets/Themes/button_tan_normal.tres"):
+		node.add_to_group('__menu_button')
+		node.add_color_override('font_color', colors.menu_button_font)
+		node.add_color_override('font_color_hover', colors.menu_button_font_hover)
+		node.add_color_override('font_color_pressed', colors.menu_button_font_pressed)
+		node.add_color_override('font_color_disabled', colors.menu_button_font)
+		node.add_color_override('font_color_focus', colors.menu_button_font_pressed)
 	
 	if node is preload("res://Scenes/HUD/CosmeticMenu/cosmetic_button.gd"):
 		node.add_to_group('__cosmetic_button')
@@ -303,12 +346,13 @@ func update():
 	# debugging ! hooray!
 	print('[CopyKatt.ColorfulMenus] Updating Theme')
 	
-	
 	# panel
 	theme.get_stylebox('panel', 'Panel').bg_color = colors.panel_light
 	_panel_green.bg_color = colors.panel_accent
 	_panel_med.bg_color = colors.panel_dim
-	
+	_panel_red.bg_color = colors.panel_warning
+	if xenon_setting_panel != null:
+		xenon_setting_panel.bg_color = colors.panel_light
 	
 	# button
 	theme.get_stylebox('normal', 'Button').bg_color = colors.normal_button
@@ -320,7 +364,6 @@ func update():
 	theme.set_color('font_color', 'Button', colors.button_font)
 	theme.set_color('font_color_disabled', 'Button', colors.disabled_button_font)
 	theme.set_color('font_color_pressed', 'Button', colors.pressed_button_font)
-	
 	
 	# lineedit
 	theme.get_stylebox('normal', 'LineEdit').bg_color = colors.line_edit
@@ -359,9 +402,11 @@ func update():
 	text_mat.set_shader_param('dim_replace', colors.label_dim)
 	text_mat.set_shader_param('mid_replace', colors.label_mid)
 	text_mat.set_shader_param('dark_replace', colors.label_dark)
-#	text_mat.set_shader_param('accent_replace', colors.label_accent)
+	text_mat.set_shader_param('accent_replace', colors.label_accent)
 	text_mat.set_shader_param('worth_replace', colors.label_worth)
-	theme.set_color('font_color','Label', colors.label_accent)
+	text_mat.set_shader_param('warning_replace', colors.label_warning)
+	
+#	theme.set_color('font_color','Label', colors.label_accent)
 	
 	
 	# sold out bg
@@ -385,6 +430,37 @@ func update():
 	# knot separators
 	colored_images.knot_separator_light.set_data(color_image(preload("res://Assets/Textures/UI/knot_sep.png").get_data().duplicate(), colors.knot_separator_light))
 	colored_images.knot_separator_dim.set_data(color_image(preload("res://Assets/Textures/UI/knot_sep2.png").get_data().duplicate(), colors.knot_separator_dim))
+	
+	# menu buttons
+	var menu_buttons = {
+		'normal': preload("res://Assets/Themes/button_tan_normal.tres"),
+		'hover': preload("res://Assets/Themes/button_tan_hover.tres"),
+		'pressed': preload("res://Assets/Themes/button_tan_pressed.tres"),
+	}
+	
+	menu_buttons.normal.bg_color = colors.menu_button_bg
+	menu_buttons.normal.border_color = colors.menu_button_shadow
+	
+	menu_buttons.hover.bg_color = colors.menu_button_bg_hover
+	menu_buttons.hover.border_color = colors.menu_button_shadow
+	
+	menu_buttons.pressed.bg_color = colors.menu_button_bg_pressed
+	menu_buttons.pressed.border_color = colors.menu_button_shadow_pressed
+
+	for node in get_tree().get_nodes_in_group('__menu_button'):
+		node.add_color_override('font_color', colors.menu_button_font)
+		node.add_color_override('font_color_hover', colors.menu_button_font_hover)
+		node.add_color_override('font_color_pressed', colors.menu_button_font_pressed)
+		node.add_color_override('font_color_disabled', colors.menu_button_font)
+		node.add_color_override('font_color_focus', colors.menu_button_font)
+	
+	# title cosmetic text
+	for i in get_tree().get_nodes_in_group('__cosmetic_button'):
+		i.add_color_override('font_color', colors.title_cosmetic)
+		i.add_color_override('font_color_hover', colors.title_cosmetic)
+		i.add_color_override('font_color_pressed', colors.title_cosmetic)
+		i.add_color_override('font_color_disabled', colors.title_cosmetic)
+		i.add_color_override('font_color_focus', colors.title_cosmetic)
 	
 	# playerhud specific stuff
 	if playerhud != null:
@@ -421,16 +497,6 @@ func update():
 		platform_shadow.set_surface_material(0,platform_shadow.get_surface_material(0).duplicate())
 		platform_shadow.get_surface_material(0).albedo_color = colors.item_display_platform_shadow
 		
-		
-		# title cosmetic text
-		for i in get_tree().get_nodes_in_group('__cosmetic_button'):
-			i.add_color_override('font_color', colors.title_cosmetic)
-			i.add_color_override('font_color_hover', colors.title_cosmetic)
-			i.add_color_override('font_color_pressed', colors.title_cosmetic)
-			i.add_color_override('font_color_disabled', colors.title_cosmetic)
-			i.add_color_override('font_color_focus', colors.title_cosmetic)
-		
-		
 		# interaction prompt
 		var tex = playerhud.get_node('main/in_game/interact_notif/TextureRect').texture
 		for i in tex.frames:
@@ -443,6 +509,7 @@ func update():
 	
 	# set color pickers
 	if instance and is_instance_valid(instance):
+		instance.get_node('Popup/ScrollContainer/VBoxContainer/UnsavedChanges').modulate = Color.white
 		for i in instance.get_node('Popup/ScrollContainer/VBoxContainer').get_children():
 			var colorpicker = i.get_node_or_null('HSplitContainer/Color')
 			if colorpicker:
@@ -469,3 +536,9 @@ func color_texture(texture, color):
 	tex.create_from_image(color_image(img, color), texture.flags)
 	
 	return tex
+
+func recursive_apply_text_shader(node):
+	if node is Label:
+		node.material = text_mat
+	for i in node.get_children():
+		recursive_apply_text_shader(i)
