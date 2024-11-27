@@ -322,7 +322,7 @@ func _on_node_added(node):
 		return
 	
 	if node is preload('res://Scenes/Entities/Player/SpeechBubble/speech_bubble.gd'):
-		node.get_node('RichTextLabel/TextureRect').texture = color_texture(preload("res://Assets/Textures/UI/bubble_arrow.png"), colors.panel_light)
+		node.get_node('RichTextLabel/TextureRect').texture = color_texture(load("res://Assets/Textures/UI/bubble_arrow.png"), colors.panel_light)
 	
 	if node is TextureRect and (node.texture == preload("res://Assets/Textures/UI/knot_sep.png") or \
 			node.texture == preload("res://Assets/Textures/UI/knot_sep1.png")):
