@@ -231,7 +231,7 @@ func _ready():
 #	add_child(theme_saver)
 	
 	if ResourceLoader.exists('res://mods/Nilenta.Xenon/main.gd'):
-		xenon_setting_panel = preload("res://mods/Nilenta.Xenon/Menu/XenonMenu/xenon_panel.tscn").instance().get_stylebox('panel')
+		xenon_setting_panel = load("res://mods/Nilenta.Xenon/Menu/XenonMenu/xenon_panel.tscn").instance().get_stylebox('panel')
 	
 	# connects to let the program know where and when to add the theme editor
 	# also saves all labels to a cache that it can quickly apply new colors to
@@ -322,7 +322,7 @@ func _on_node_added(node):
 		return
 	
 	if node is preload('res://Scenes/Entities/Player/SpeechBubble/speech_bubble.gd'):
-		node.get_node('RichTextLabel/TextureRect').texture = color_texture(load("res://Assets/Textures/UI/bubble_arrow.png"), colors.panel_light)
+		node.get_node('RichTextLabel/TextureRect').texture = color_texture(preload("res://Assets/Textures/UI/bubble_arrow.png"), colors.panel_light)
 	
 	if node is TextureRect and (node.texture == preload("res://Assets/Textures/UI/knot_sep.png") or \
 			node.texture == preload("res://Assets/Textures/UI/knot_sep1.png")):
