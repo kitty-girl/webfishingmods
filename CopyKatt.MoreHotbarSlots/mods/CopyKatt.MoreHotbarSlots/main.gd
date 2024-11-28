@@ -16,7 +16,7 @@ func _process(delta):
 		if !PlayerData.hotbar.has(i+5):
 			PlayerData.hotbar[i+5] = 0
 	
-	var inventory = $'/root/playerhud/main/menu/tabs/inventory'
+	var inventory = get_node_or_null('/root/playerhud/main/menu/tabs/inventory')
 	if is_instance_valid(inventory) and is_instance_valid(inventory.hovered_slot) and inventory.is_visible_in_tree():
 		for i in 5:
 			if Input.is_action_just_pressed("bind_"+str(i+6)):
