@@ -1,12 +1,20 @@
 # CopyKatt's Webfishing Mods
 ## More Hotbar Slots
 ### Changelog
+- v1.0.1
+    - Fixed constant errors on console
 - v1.0.0
     - Inital release
 ## Colorful Menus
 ### Changelog
-- v1.0.0
-    - Inital release
+- 1.1.0
+    - Fixed catch text not being customizeable
+    - Xenon compatibility
+    - FishyTracker compatibility
+    - Added color setting for "18+" text
+    - Added color settings for menu buttons
+- 1.0.0
+    - Initial release
 ## SM64Map
 ### Changelog
 - v0.1.0
