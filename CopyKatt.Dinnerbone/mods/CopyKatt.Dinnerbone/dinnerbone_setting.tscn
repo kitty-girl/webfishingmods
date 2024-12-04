@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Scenes/Singletons/Tooltips/tooltip_node.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/Menus/Main Menu/ui_generic_button.gd" type="Script" id=2]
+
+[node name="dinnerbone_setting" type="HBoxContainer"]
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="."]
+margin_top = 3.0
+margin_right = 79.0
+margin_bottom = 17.0
+size_flags_horizontal = 3
+text = "Dinnerbone:"
+
+[node name="TooltipNode" type="Control" parent="Label"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+header = "Dinnerbone"
+body = "Turns your character upside-down"
+
+[node name="dinnerbone" type="OptionButton" parent="."]
+margin_left = 83.0
+margin_right = 112.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.75
+script = ExtResource( 2 )

@@ -1,20 +1,30 @@
 # CopyKatt's Webfishing Mods
+
+## Dinnerbone
+### Changelog
+- v1.0.1
+    - Fix minigame being inverted even when the setting is off
+- v1.0.0
+    - Inital release
+
 ## More Hotbar Slots
 ### Changelog
 - v1.0.1
     - Fixed constant errors on console
 - v1.0.0
     - Inital release
+
 ## Colorful Menus
 ### Changelog
-- 1.1.0
+- v1.1.0
     - Fixed catch text not being customizeable
     - Xenon compatibility
     - FishyTracker compatibility
     - Added color setting for "18+" text
     - Added color settings for menu buttons
-- 1.0.0
+- v1.0.0
     - Initial release
+
 ## SM64Map
 ### Changelog
 - v0.1.0
